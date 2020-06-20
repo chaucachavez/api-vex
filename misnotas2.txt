@@ -1,0 +1,53 @@
+1.) //No tiene asignado ningun usuario.
+grant_type = client_credentials
+Se crea con CMD> php artisan passport:client
+Se envia POST http://apiclinicanet.pe/oauth/token para obtener un access_token
+[{"key":"grant_type","value":"client_credentials","description":""},{"key":"client_id","value":"5"},{"key":"client_secret","value":"Dragon2UYrHhAB9QjSJuOUUKkX0pxA8nJaB4Vk60Ballz","description":""}]
+
+
+2.)//Requiere informacion del usuario
+auth:api
+ 
+ 
+3.)//Si tiene asignado un usuario.
+grant_type = password
+Se crea con CMD> php artisan passport:client --password
+Se envia POST http://apiclinicanet.pe/oauth/token para obtener un access_token
+[{"key":"grant_type","value":"password","description":""},{"key":"client_id","value":"6"},{"key":"client_secret","value":"QEsS52bUcawUhrb5Ig03HdqGEWdgfCAP9eQqmAYw","description":""},{"key":"username","value":"alvarado@gmail.com","description":""},{"key":"password","value":"55557777","description":""}]
+
+EL "GRANT_TYPE DE TIPO password" PUEDE ACCEDER A LOS CONTROLADORES PROTEGIDOS POR "GRANT_TYPE DE TIPO client_credentials" PERO NO VICEVERSA.
+
+
+4.)// Tokens personales
+Se crea con CMD> php artisan passport:client --personal
+El access token personal nunca expira y debe ser usado en entorno de prueba.
+
+
+5)//clase 184. Token con codigo de autorización cliente <-> usuario, esto usa Facebook para crear un token de acceso para otros usuario.
+
+Urls
+http://apiclinicanet.pe/oauth/authorize?client_id=10&redirect_uri=http://localhost/dashboard&response_type=code
+Luego de la Url nos redirigirá y copiaremos el "code" para ir a POST http://apiclinicanet.pe/oauth/token para generar el token
+
+grant_type = authorization_code
+client_id = 10
+client_secret = IMpWAO65SMN73bTse5gD25FLxmbcl8LokZIypCJ0
+redirect_uri = http://localhost/dashboard
+code = def502004a5e6c61e1ef09c486bfa993037661839c92d04d7969655f6e360d44eb713b00f433dd5ff61adfb740484eaeaa153527656f09a2b325f45164b4c6e8c6966ba7a20f0dceeed31ae38f3799c200bbb822077c42561b76fb87fc9ee912450856d94dd50503892eb57d35fc8e45e31b1009a563aa534ea5ea534465ba8faed0fabb223129a856cee23b951cae3e0d82d0f311cbcc9e356f59365e2442c306a7f3be4c55a6a787dcf05df34994555fbd59d6fb8333b3baefa44bc22ec62c310bdde3f8152be6a74325b84e55b59c4d40427b03cae411d1463166edff8c993fca0f045b7b140383e96310ec6f737e7d2055766715572b96fadb058618c3d02ffd3354639c18f3857611392e3139ee7a077803a2217e5d1cdb681b61b69f562311b3f050e1edd3f2c3cc63ede59fe5d10ca0654dd0a625a698ba53bd8b2b590baa9d525f9dac08e7a2ad4d1fa3ab33ade99ba6261df02e84b636b748bf835a5c
+
+6) Simirlar al 5) se obtiene acceso directo al token por el URL
+http://apiclinicanet.pe/oauth/authorize?client_id=10&redirect_uri=http://localhost/dashboard&response_type=token
+
+
+7) Refrescar un token con "refresh_token"  
+
+grant_type = refresh_token
+client_id = 12
+client_secret = jbv4M6PIlnymjLz4A0GGQ14VkEzhD2Qc5hQwzVNs
+refresh_token = def50200f9df7971626df57f71bb77d97ecfe41aa86cf25bafe4c0226f0e4371623baa3889bdab00d6fba50f86458681035687e19abd8da11d2bb0285ff269029134e65353168c9dcad2308c1417a4362da7d5c060cbe25f32145ea777688d88847706f7f87c516fb036091ec6cbd4e74c8a27804bd4d559e35ea9af340c60cc2fe30fc537150884038c213561ce7f88569161b71a86f4cca39804df191538b89157fb520320190dc2a20e695111827272c861ea2d1ed6d2940fc6effd851e27904b4ceee2d2cf72895b8b190d87deb8e7dfba0bcbe1a51d513d2f221b15966090e32ceff260d946cbc3bb287c0642e0e54c9b9a8a9788d6174127949a4ddcab664fd19139bfe7192b3184e0f371600da191124c721bea711b5da02e24b91dcb1ab2b9ba59eb6b994a8448fe351c91609e158179fd667a4ed3ec82fa0218de429f6c4a64fe95fb1ad998ef9982e8ec64f7891d84747c26639a7cdb9baa59725d6fd2a39923a9
+
+
+-----------------------------------------------------------------
+
+
+eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjE3OTNhMjQwYzU5MzdiZWQxYjc3MjMzNmJmNGY3ZDM4MGY0OWU5YmIxNDBlNDE4ZTk5ZTQxM2QwNWRiMGIwMDFjNjE4ZjUxYzRiNzY3YjZhIn0

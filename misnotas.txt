@@ -1,0 +1,2 @@
+# Actualiza laravel y lo registra en composer.lock.
+composer update

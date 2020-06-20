@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Http\Controllers\Mediopago;
+
+use App\Models\Mediopago;
+use Illuminate\Http\Request;
+use App\Http\Controllers\ApiController;
+
+class MediopagoController extends ApiController
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $this->fooAll($resource, $where, $orderName, $orderSort, $pageSize, new Mediopago());
+            
+        //\DB::enableQueryLog();
+        $query = Mediopago::with($resource)
+            ->where($where)
+            ->orderBy($orderName, $orderSort);            
+
+            if ($pageSize)
+                $data = $query->paginate($pageSize);
+            else
+                $data = $query->get();
+
+        //dd(\DB::getQueryLog());
+        //dd($data);
+        return $this->showPaginateAll($data);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Mediopago  $mediopago
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Mediopago $mediopago)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Mediopago  $mediopago
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Mediopago $mediopago)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Mediopago  $mediopago
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Mediopago $mediopago)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Mediopago  $mediopago
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Mediopago $mediopago)
+    {
+        //
+    }
+}
