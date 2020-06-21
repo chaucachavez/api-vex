@@ -32,7 +32,7 @@ use App\Http\Controllers\Pdfs\invoiceTICKETController;
 /*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });*/ 
- 
+
 Route::get('invoicea4/{idventa}', 'Pdfs\invoiceA4Controller@reporte');
 Route::get('invoicea5/{idventa}', 'Pdfs\invoiceA5Controller@reporte');
 Route::get('masivox/{id}', 'Pdfs\invoiceMASIVOController@reporte');
@@ -199,9 +199,9 @@ Route::post('/users/me/{token}/update', 'Entidad\EntidadController@meUpdate');
 Route::post('/users/reset/{token}', 'Entidad\EntidadController@resetPassword'); 
 Route::post('/logouta', 'Entidad\EntidadController@logout'); 
 Route::post('/consulta/dniruc', 'Empresa\EmpresaController@consultaDniRuc'); 
-
-Route::get('/hola', function (Codedge\Fpdf\Fpdf\Fpdf $fpdf) {	
-    $user = Entidad::where('identidad', 1)->first(); 
+ 
+Route::get('/holamundo/{id}', function (Codedge\Fpdf\Fpdf\Fpdf $fpdf, $id) {	
+    $user = Entidad::where('identidad', $id)->first(); 
     // dd($user);
     // $user->password = Hash::make($user->password);
     // $user->password = bcrypt($user->password);
@@ -231,7 +231,7 @@ Route::get('/ws', function (Request $request) {
     // $client = new SoapClient("https://testing.bizlinks.com.pe/integrador21/ws/invoker?wsdl");
     // $functions = $client->__getFunctions(); //Obtiene las funciones disponibles en el servicio
     // var_dump ('<pre>', $functions); 
-    // exit;
+    // exit; 
 
     // $url = "https://testing.bizlinks.com.pe/integrador21/ws/invoker?wsdl";
     // $client = new SoapClient($url); 
