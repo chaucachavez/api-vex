@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use Codedge\Fpdf\Fpdf\Fpdf as baseFpdf;
 use Illuminate\Support\Facades\Storage;
-// use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PDF extends baseFpdf 
 {
@@ -747,10 +746,9 @@ class invoiceA4Controller extends Controller
         $urlFile =  $pathPdf . $nombreFile . '.pdf';
 
         /*Salida*/ 
-        // dd($return);  
         if ($return) {
 
-            $pdf->Output('F', $urlFile);  
+            $pdf->Output('F', $urlFile);
 
             if (file_exists($urlFile)) 
             {

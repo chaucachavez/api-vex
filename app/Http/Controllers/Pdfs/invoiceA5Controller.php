@@ -8,28 +8,25 @@ use App\Models\Empresa;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use Codedge\Fpdf\Fpdf\Fpdf as baseFpdf;
+use Illuminate\Support\Facades\Storage;
 
 class PDFA5 extends baseFpdf 
-{        
-    public $path = 'http://apiapp.pe/img/';   
+{   
     public $borde = 0;
-    public $logo;        
+    PUBLIC $color = [191,54,12]; //25, 8, 255
+    public $imglogo;
+    public $imgqr;
     public $serienumero; 
-    public $razonsocial;  
     public $ruc;
+    public $razonsocial;      
     public $direccion;
     public $ubigeo;
-    public $telefono;   
-    public $nombreFile;
+    public $telefono;
     public $comprobante;
-    PUBLIC $color = [191,54,12]; //25, 8, 255
-    public $pathImg =  'C:\\xampp\\htdocs\\apiapp\\public\\pdf\\';
-    // public $pathImg =  '/home/centromedico/public_html/apiosi/public/pdf/';
-    // public $pathImg =  '/home/ositest/public_html/apiosi/public/pdf/';
 
     function Header()
     {        
-        $this->Image($this->path . $this->logo, 4, 4, 74, 0);  
+        $this->Image($this->imglogo, 4, 4, 74, 0);  
         $this->SetFont('Arial', 'B', 12);
         $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
         $this->SetFillColor(255, 255, 255); 
@@ -83,7 +80,7 @@ class PDFA5 extends baseFpdf
         $this->Cell(22, 20, utf8_decode(''), $this->borde, 0, 'L');
 
         $this->setXY(4, -26);            
-        $this->Image('http://apiapp.pe/empresa/31/img/logo_pdf.png', $this->getX() + 1, $this->getY(), 20, 0, 'PNG');
+        $this->Image($this->imgqr, $this->getX() + 1, $this->getY(), 20, 0, 'PNG');
 
         $this->SetFont('Arial', '', 8.5); 
         $this->setXY(26, -26); 
@@ -314,6 +311,13 @@ class invoiceA5Controller extends Controller
 
     public function reporte($idventa, $return = false)
     { 
+        $pathPdf = public_path() . DIRECTORY_SEPARATOR . 'empresa' . 
+                        DIRECTORY_SEPARATOR . auth()->user()->idempresa . 
+                        DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR;
+
+        $urlImg = Storage::disk('publica')->url('empresa/' . auth()->user()->idempresa . '/img/');
+        $urlQr = Storage::disk('publica')->url('empresa/' . auth()->user()->idempresa . '/qr/');
+
         $pdf = new PDFA5();   // [A4:210 x 297] [A5:148 x 210] [TICKET: No existe medida standar]
 
         $height = 4;        
@@ -334,6 +338,8 @@ class invoiceA5Controller extends Controller
         $pdf->ubigeo = $venta->sede->departamento . ' - ' . $venta->sede->provincia . ' - ' . $venta->sede->distrito;
         $pdf->serienumero = $venta->serie . '-' . $venta->numero;
         $pdf->color = [$color[0], $color[1], $color[2]];
+        $pdf->imglogo = $urlImg . $venta->empresa->logopdf;
+        $pdf->imgqr = $urlQr;
         // dd($venta->iddocumentofiscal);
         switch ($venta->clientedoc) { 
             case 1: $docIdentif = 'DNI'; break;
@@ -366,12 +372,14 @@ class invoiceA5Controller extends Controller
                 $pdf->comprobante = '';
                 break;
         }
-
-        $pdf->nombreFile = $venta->empresa->ruc .'-'. 
+            
+        $nombreFile = $venta->empresa->ruc .'-'. 
                            $tipocomprobantesunat . '-'.
                            $venta->serie . '-'.
                            $venta->numero;
         
+        $pdf->imgqr .= $nombreFile.'.png';
+
         $pdf->SetMargins(4, 4, 4);
         $pdf->SetAutoPageBreak(true, 26); // 26 corresponde al Footer()
         $pdf->AliasNbPages(); 
@@ -737,15 +745,16 @@ class invoiceA5Controller extends Controller
             $pdf->Ln();
         }
  
-         
+        $urlFile =  $pathPdf . $nombreFile . '.pdf';
         
         /*Salida*/ 
         if ($return) {
-            $pdf->Output('F', 'pdf/' . $pdf->nombreFile . '.pdf');    
+
+            $pdf->Output('F', $urlFile);  
         
-            if (file_exists($pdf->pathImg . $pdf->nombreFile . '.pdf')) 
+            if (file_exists($urlFile)) 
             {
-                $mensaje = array('generado' => 1, 'mensaje' => $pdf->nombreFile);
+                $mensaje = array('generado' => 1, 'mensaje' => $nombreFile);
             } else 
             {
                 $mensaje = array('generado' => 0, 'mensaje' => 'PDF no se genero');
@@ -753,11 +762,12 @@ class invoiceA5Controller extends Controller
             
             return $mensaje;
         } else {
-            $pdf->Output();    
-
-            if (!file_exists($pdf->pathImg . $pdf->nombreFile . '.pdf')) {
+            
+            if (!file_exists($urlFile)) { 
                 \Log::info(print_r('PDF no se genero.', true));   
             }
+
+            $pdf->Output();
         }
     } 
 }
